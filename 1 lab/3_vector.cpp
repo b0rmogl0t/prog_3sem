@@ -15,7 +15,7 @@ bool init(subvector *qv) {
 }
 
 void clear(subvector *qv) {
-    delete[] qv->mas;
+    qv->mas;
     init(qv);
 }
 
@@ -55,7 +55,7 @@ int pop_back(subvector *qv) {
         return NULL;
     }
     int tmp = qv->mas[qv->top - 1];
-    qv->mas[qv->top - 1] = NULL;
+    qv->mas[qv->top - 1] = 0;
     qv->top--;
     return tmp;
 }
@@ -72,12 +72,13 @@ bool resize(subvector *qv, unsigned int new_capacity) {
 
     qv->capacity = new_capacity;
     int* tmp = new int[qv->capacity]{0};
-    int last{0};
+    int last = 0;
 
     if (new_capacity > qv->top) {
         last = qv->top;
     } else {
         last = new_capacity;
+        qv->top = new_capacity; 
     }
 
     for (int i = 0; i < last; i++) {
