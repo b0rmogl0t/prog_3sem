@@ -60,39 +60,42 @@ void mergeSort(int* arr, int size) {
     delete[] right;
 }
 
-
 void fillArray(int* arr, int size) {
     for (int i = 0; i < size; i++) {
         arr[i] = rand() % 100000;
     }
 }
 
+// Функция для тестирования сортировки и записи результата в файл
+void testMergeSort(int size, ofstream& file) {
+    int* arr = new int[size];
+    fillArray(arr, size);
 
-void testMergeSort() {
-    const int numTests = 5;
-    int sizes[] = {1000, 5000, 10000, 50000, 100000};  
+    auto start = high_resolution_clock::now();
+    mergeSort(arr, size);
+    auto stop = high_resolution_clock::now();
 
-    for (int i = 0; i < numTests; i++) {
-        int size = sizes[i];
-        int* arr = new int[size];
+    auto duration = duration_cast<milliseconds>(stop - start);
+    file << size << " " << duration.count() << endl; // Запись в файл
+    cout << "Array size: " << size << ", Time taken: " << duration.count() << " ms" << endl;
 
-        fillArray(arr, size);  
-
-        auto start = high_resolution_clock::now(); 
-
-        mergeSort(arr, size); 
-
-        auto stop = high_resolution_clock::now();  
-        auto duration = duration_cast<milliseconds>(stop - start);  
-
-        cout << "Array size: " << size << ", Time taken: " << duration.count() << " ms" << endl;
-
-        delete[] arr; 
-    }
+    delete[] arr;
 }
 
 int main() {
-    testMergeSort();
+    srand(static_cast<unsigned>(time(0)));
 
+    ofstream file("merge_sort_results.txt"); // Открываем файл для записи
+
+    int start_size = 1000;   // Начальный размер массива
+    int step = 2000;         // Шаг увеличения размера
+    int num_tests = 20;      // Количество тестов
+
+    for (int i = 0; i < num_tests; i++) {
+        int size = start_size + i * step;
+        testMergeSort(size, file);
+    }
+
+    file.close(); // Закрываем файл
     return 0;
 }
