@@ -49,36 +49,40 @@ void heapssort(int* arr, int n){
 
 void generateRandomArray(int* arr, int n) {
     for (int i = 0; i < n; i++) {
-        arr[i] = rand() % 10000; 
+        arr[i] = rand() % 10000;
     }
 }
 
-// Функция для измерения времени работы алгоритма сортировки
-void testHeapSort(int size) {
+// Функция для измерения времени работы алгоритма
+void testHeapSort(int size, ofstream& file) {
     int* arr = new int[size];
     generateRandomArray(arr, size);
 
-    auto start = std::chrono::high_resolution_clock::now(); // Старт таймера
-
-    heapssort(arr, size); // Выполнение сортировки
-
-    auto end = std::chrono::high_resolution_clock::now();   // Конец таймера
+    auto start = std::chrono::high_resolution_clock::now();
+    heapssort(arr, size);
+    auto end = std::chrono::high_resolution_clock::now();
 
     std::chrono::duration<double> duration = end - start;
-    std::cout << "Array size: " << size << " - Time taken: " << duration.count() << " seconds" << std::endl;
+    file << size << " " << duration.count() << endl; // Записываем результат в файл
+    cout << "Array size: " << size << " - Time taken: " << duration.count() << " seconds" << endl;
 
     delete[] arr;
 }
 
 int main() {
-    srand(static_cast<unsigned>(time(0)));  // Инициализация генератора случайных чисел
+    srand(static_cast<unsigned>(time(0))); 
 
-    // Тестируем сортировку на разных размерах массива
-    int sizes[] = {1000, 5000, 10000, 50000, 100000, 500000};
-    
-    for (int size : sizes) {
-        testHeapSort(size);
+    ofstream file("heap_sort_results.txt"); // Открываем файл для записи
+
+    int start_size = 1000;   // Начальный размер массива
+    int step = 2000;         // Шаг увеличения размера
+    int num_tests = 20;      // Число тестов
+
+    for (int i = 0; i < num_tests; i++) {
+        int size = start_size + i * step;
+        testHeapSort(size, file);
     }
 
+    file.close(); // Закрываем файл
     return 0;
 }
