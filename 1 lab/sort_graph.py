@@ -38,8 +38,18 @@ def least_squares(x, y, yerrors=None):
     return k, b, error, chi_squared
 
 
-n_heap = [1000, 5000, 10000, 50000, 100000, 500000]
-t_heap = [0.0002456, 0.0014199, 0.0029955, 0.0230719, 0.0460887, 0.225516]
+
+
+
+
+
+n_heap= []
+t_heap = []
+with open("heap_sort_results.txt", "r") as file:
+    for line in file:
+        size, time = map(float, line.split())
+        n_heap.append(int(size))
+        t_heap.append(time)
 
 N_heap = [log(n) for n in n_heap]
 T_heap = [log(t) for t in t_heap]
@@ -60,8 +70,18 @@ ax.grid()
 plt.show()
 
 
-n_merge = [1000, 5000, 10000, 50000, 100000]
-t_merge = [2, 14, 27, 148, 168]
+
+
+n_merge= []
+t_merge = []
+with open("merge_sort_results.txt", "r") as file:
+    for line in file:
+        size, time = map(float, line.split())
+        n_heap.append(int(size))
+        t_heap.append(time)
+
+N_heap = [log(n) for n in n_heap]
+T_heap = [log(t) for t in t_heap]
 
 
 N_merge = [log(n) for n in n_merge]
