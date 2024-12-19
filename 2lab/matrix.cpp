@@ -26,6 +26,55 @@ public:
         return m;
     }
 
+    // Метод перестановки строк
+    void swapRows(unsigned row1, unsigned row2) {
+        if (row1 >= _rows || row2 >= _rows)
+            throw std::out_of_range("Row index out of range.");
+        for (unsigned col = 0; col < _cols; ++col)
+            std::swap((*this)(row1, col), (*this)(row2, col));
+    }
+
+    // Метод сложения строк
+    void addRows(unsigned targetRow, unsigned sourceRow, T multiplier) {
+        if (targetRow >= _rows || sourceRow >= _rows)
+            throw std::out_of_range("Row index out of range.");
+        for (unsigned col = 0; col < _cols; ++col)
+            (*this)(targetRow, col) += multiplier * (*this)(sourceRow, col);
+    }
+
+    // Метод умножения строки на число
+    void multiplyRow(unsigned row, T multiplier) {
+        if (row >= _rows)
+            throw std::out_of_range("Row index out of range.");
+        for (unsigned col = 0; col < _cols; ++col)
+            (*this)(row, col) *= multiplier;
+    }
+
+    // Метод сложения столбцов
+    void addCols(unsigned targetCol, unsigned sourceCol, T multiplier) {
+        if (targetCol >= _cols || sourceCol >= _cols)
+            throw std::out_of_range("Col index out of range.");
+        for (unsigned row = 0; row < _rows; ++row)
+            (*this)(row, targetCol) += multiplier * (*this)(row, sourceCol);
+    }
+
+    // Метод умножения столбца на число
+    void multiplyCol(unsigned col, T multiplier) {
+        if (col >= _cols)
+            throw std::out_of_range("Col index out of range.");
+        for (unsigned row = 0; row < _rows; ++row)
+            (*this)(row, col) *= multiplier;
+    }
+
+    void transpose() {
+        for (unsigned i = 0; i < _rows; i++) {
+            for (unsigned j = 0; j < _cols; j++) {
+                if (i == j) continue;
+                std::swap((*this)(i, j), (*this)(j, i));
+            }
+        }
+    }
+
     // Статический метод: создание матрицы с заданным детерминантом
     static Matrix getSpecificDeterminant(unsigned n, T determinant) {
         Matrix m(n, n); // Создаём пустую матрицу
@@ -43,6 +92,26 @@ public:
                     
                     m(i, j) = T(0);
                 }
+            }
+        }
+
+        for (int _ = 0; _ < 2 * n; _++) {
+            int action = rand() % 6;
+            if (action == 0) {
+                m.transpose();
+            } else {
+                unsigned row1 = rand() % n;
+                unsigned row2 = rand() % n;
+
+                if (row1 == row2) {
+                    if (row1 > 0) {
+                        row1--;
+                    } else {
+                        row1++;
+                    }
+                }
+
+                m.swapRows(row1, row2);
             }
         }
 
@@ -156,5 +225,6 @@ void run_tests() {
 
 int main() {
     run_tests();
+
     return 0;
 }
