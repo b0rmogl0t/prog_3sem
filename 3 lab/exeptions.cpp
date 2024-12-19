@@ -1,6 +1,5 @@
 #include <iostream>
 
-
 class VectorException : public std::exception {
 private:
     std::string message;
@@ -57,17 +56,8 @@ struct subvector {
     subvector& operator=(const subvector& other) {
         if (this == &other) return *this; // Защита от самоприсваивания
 
-        delete[] mas; // Освобождаем старую память
-
-        top = other.top;
-        capacity = other.capacity;
-        mas = nullptr;
-        if (other.mas) {
-            mas = new int[capacity];
-            for (unsigned int i = 0; i < top; ++i) {
-                mas[i] = other.mas[i];
-            }
-        }
+        subvector tmp(other);
+        operator=(std::move(tmp));
         return *this;
     }
 
@@ -97,6 +87,7 @@ struct subvector {
     }
 
     bool push_back(int d) {
+        int* tmp = nullptr;
         try {
             if (capacity == 0) {
                 mas = new int[1];
@@ -119,7 +110,7 @@ struct subvector {
             else {
                 capacity *= 2;
             }
-            int* tmp = new int[capacity] {};
+            tmp = new int[capacity] {};
 
             for (unsigned int i = 0; i < top; i++) {
                 tmp[i] = mas[i];
@@ -132,6 +123,7 @@ struct subvector {
             return true;
         }
         catch (const std::bad_alloc&) {
+            delete[] tmp;
             throw VectorAllocEception("Memory allocation failed in push_back");
         }
     }
@@ -144,6 +136,7 @@ struct subvector {
     }
 
     bool resize(unsigned int new_capacity) {
+        int* tmp = nullptr;
         try {
             if (capacity == new_capacity) {
                 return true;
@@ -153,7 +146,7 @@ struct subvector {
                 clear();
                 return true;
             }
-            int* tmp = new int[new_capacity] {};
+            tmp = new int[new_capacity] {};
             unsigned int last = (new_capacity > top) ? top : new_capacity;
 
             for (unsigned int i = 0; i < last; i++) {
@@ -168,6 +161,7 @@ struct subvector {
             return true;
         }
         catch (const std::bad_alloc&) {
+            delete[] tmp;
             throw VectorAllocEception("Memory allocation failed in resize");
         }
     }
